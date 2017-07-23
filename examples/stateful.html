@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Stateful Components</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Tahoma, sans-serif;
+        font-size: 16px;
+      }
+
+      stateful-app {
+        display: block;
+        max-width: 500px;
+        margin: 50px auto;
+      }
+
+      task-enterer {
+        display: block;
+        margin-bottom: 16px;
+      }
+      task-enterer input {
+        padding: 10px;
+        font-size: inherit;
+        font-family: inherit;
+        border: 1px solid #000;
+        line-height: 16px;
+      }
+
+      button {
+        display: inline-block;
+        padding: 10px;
+        font-size: inherit;
+        font-family: inherit;
+        border: 2px solid #000;
+        background: transparent;
+        line-height: 16px;
+        border-radius: 4px;
+        margin-bottom: 16px;
+      }
+      button:hover {
+        background: #000;
+        color: #fff;
+        cursor: pointer;
+        outline: 0;
+      }
+
+      task-view {
+        display: block;
+        padding: 5px;
+        cursor: pointer;
+      }
+      task-view:hover {
+        background: #eee;
+      }
+      task-view.done {
+        opacity: .3;
+        text-decoration: line-through;
+      }
+
+      task-list {
+        position: relative;
+        display: block;
+      }
+      task-list.tiny {
+        position: fixed;
+        top: 0;
+        right: 0;
+        transform-origin: top right;
+        transform: scale(.4);
+      }
+      task-list.weird {
+        transform: rotate(82deg) scale(.6);
+      }
+    </style>
+  </head>
+  <body>
+    <script src="../SuperComponent.js" charset="utf-8"></script>
+    <script>
+      // Empty state object to be used as app state
+      const AppState = (() => {
+        const controller = {
+          tasks: localStorage.tasks ? JSON.parse(localStorage.tasks) : [],
+
+          __updateListeners: [],
+          onUpdate (cb) {
+            controller.__updateListeners.push(cb)
+          },
+          save () {
+            localStorage.tasks = JSON.stringify(controller.tasks)
+            controller.__updateListeners.forEach((cb) => {
+              cb()
+            })
+          }
+        }
+
+        return controller
+      })()
+
+      class StatefulApp extends SuperComponent {
+        get template () {
+          return `
+            <h1>Tasks</h1>
+            <button data-on="click:_clearCompleted">Clear completed tasks</button>
+            <task-enterer></task-enterer>
+            <task-list></task-list>
+            <task-list class="tiny"></task-list>
+            <task-list class="weird"></task-list>
+          `
+        }
+        _clearCompleted () {
+          AppState.tasks = AppState.tasks.filter((t) => !t.done)
+          AppState.save()
+        }
+      }
+      customElements.define('stateful-app', StatefulApp)
+
+      class TaskList extends SuperComponent {
+        connected () {
+          AppState.onUpdate(this.render.bind(this))
+        }
+
+        get template () {
+          return `
+            ${AppState.tasks.map((task, i) => { return `
+              <task-view data-id="${i}"></task-view>
+            `}).join('')}
+          `
+        }
+      }
+      customElements.define('task-list', TaskList)
+
+      class TaskView extends SuperComponent {
+        connected () {
+          this._data = AppState.tasks[this.dataset.id]
+
+          this.bindAll([
+            '_onClick'
+          ])
+
+          this.classList.toggle('done', this._data.done ? true : false)
+          this.onclick = this._onClick
+        }
+        get template () {
+          return `
+            <strong>${this._data.title}</strong>
+          `
+        }
+
+        _onClick () {
+          this._data.done = !this._data.done
+          AppState.save()
+        }
+      }
+      customElements.define('task-view', TaskView)
+
+      class TaskEnterer extends SuperComponent {
+        get template () {
+          return `
+            <form data-on="submit:_onSubmitForm">
+              <input placeholder="New task name" type="text" data-ref="_input">
+              <button type="submit">Submit</button>
+            </form>
+          `
+        }
+
+        _onSubmitForm (event) {
+          event.preventDefault()
+          if (this._input.value === '') return
+
+          AppState.tasks.push({
+            title: this._input.value
+          })
+          AppState.save()
+
+          this._input.value = ''
+        }
+      }
+      customElements.define('task-enterer', TaskEnterer)
+    </script>
+
+    <stateful-app></stateful-app>
+  </body>
+</html>

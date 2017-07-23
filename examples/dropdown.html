@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <style>
+      super-dropdown {
+        position: relative;
+        display: inline-block;
+        width: 200px;
+        border: 1px solid #888;
+        margin-bottom: 8px;
+      }
+      super-dropdown:before {
+        content: '';
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        border-right: 2px solid #000;
+        border-bottom: 2px solid #000;
+        width: 8px;
+        height: 8px;
+        transform: translate(0, -50%) rotate(45deg);
+        margin-top: -2px;
+        pointer-events: none;
+      }
+
+      super-dropdown span {
+        display: block;
+        padding: 2px;
+        cursor: pointer;
+      }
+      super-dropdown ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: none;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,.4);
+        padding: 0;
+        margin: 0;
+      }
+      super-dropdown li {
+        display: block;
+        padding: 2px;
+      }
+      super-dropdown li:hover {
+        background: #eee;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <super-dropdown>
+      <li>Test 1</li>
+      <li>Test 2</li>
+      <li>Test 3</li>
+      <li>Test 4</li>
+    </super-dropdown>
+
+    <script src="../SuperComponent.js" charset="utf-8"></script>
+    <script type="text/javascript">
+      class SuperDropdown extends SuperComponent {
+        connected () {
+          this.bindAll([
+            '_onClickElement'
+          ])
+        }
+
+        get template () {
+          return `
+            <span data-ref="_title" data-on="click:_onClick" class="current-title">${this.selected}</span>
+            <ul data-ref="_itemContainer" class="items">
+              ${this.innerHTML}
+            </ul>
+          `
+        }
+
+        rendered () {
+          var els = [].slice.call(this._itemContainer.querySelectorAll('li'))
+          els.forEach((el) => el.onclick = this._onClickElement)
+
+          this.selected = this.querySelector('li').innerText
+        }
+
+        set selected (val) {
+          this._title.innerText = val
+          this._selected = val
+        }
+
+        get selected () {
+          return this._selected
+        }
+
+        _onClick () {
+          this._itemContainer.style.display = 'block'
+        }
+        _onClickElement (event) {
+          this.selected = event.currentTarget.innerText
+          this._itemContainer.style.display = 'none'
+        }
+      }
+      customElements.define('super-dropdown', SuperDropdown)
+    </script>
+  </body>
+</html>

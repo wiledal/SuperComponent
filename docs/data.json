@@ -1,0 +1,138 @@
+{
+    "project": {},
+    "files": {
+        "SuperComponent.js": {
+            "name": "SuperComponent.js",
+            "modules": {},
+            "classes": {
+                "SuperComponent": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "SuperComponent": {
+            "name": "SuperComponent",
+            "shortname": "SuperComponent",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "SuperComponent.js",
+            "line": 1,
+            "description": "The base component of all living things.\n\nExtend this to create fast components with built-in event handling\nand auto child-reference assignment.\n\nA _SuperComponent_ follows the `CustomElement` lifecycle, with some additions:\n- `connected`: Called when the element is added to the DOM\n- `get template`: Called immediately after `connected` to render the element on screen\n- `rendered`: Called immediately after the rendering is done\n- `disconnected`: Called when and if the element is removed from the DOM\n\n**Special child attributes:**\n- `data-on`: Assigns a callback on the nearest parent for the event supplied.\nMultiple events can be added by separating with a comma (,).\n```html\n<custom-element>\n  <!-- Call this._onClick on the parent upon click, and this._onHover on mouseenter -->\n  <div data-on=\"click:_onClick, mouseenter: _onHover\">Click or hover me</div>\n</custom-element>\n```\n\n- `data-ref`: Assigns a variable reference to the element on the parent.\nThe reference is available in the scope as `this.referenceName`\n```html\n<custom-element>\n  <!-- This child is available as this._childElement on the parent custom element -->\n  <div data-ref=\"_childElement\"></div>\n</custom-element>\n```\n\n**Usage example:**\n```html\n<script>\n  class MyCoolElement extends SuperComponent {\n    get template () {\n      return `\n        <h1 data-ref=\"_title\">I will turn red if the button is clicked.</h1>\n        <button data-on=\"click: _onClickButton, mouseenter: _onHoverButton\">Click me</button>\n      `\n    }\n\n    _onHoverButton (event) {\n      this._title.style.background = 'blue'\n    }\n\n    _onClickButton (event) {\n      this._title.style.background = 'red'\n      alert('Child was clicked!')\n    }\n  }\n  customElements.define('my-cool-element', MyCoolElement)\n</script>\n\n<my-cool-element></my-cool-element>\n```"
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "SuperComponent.js",
+            "line": 61,
+            "description": "Called natively when the element is added to the DOM\nCalls `this.connected()` if defined.\nCalls `this.render()`",
+            "itemtype": "method",
+            "name": "connectedCallback",
+            "access": "private",
+            "tagname": "",
+            "class": "SuperComponent"
+        },
+        {
+            "file": "SuperComponent.js",
+            "line": 74,
+            "description": "Called natively when the element is removed from the DOM\nCalls `this.disconnected()` if defined.",
+            "itemtype": "method",
+            "name": "disconnectedCallback",
+            "access": "private",
+            "tagname": "",
+            "class": "SuperComponent"
+        },
+        {
+            "file": "SuperComponent.js",
+            "line": 85,
+            "description": "Returns the html of the element, should be defined as a `{Getter}`",
+            "itemtype": "method",
+            "name": "get template",
+            "return": {
+                "description": "html",
+                "type": "String"
+            },
+            "access": "public",
+            "tagname": "",
+            "class": "SuperComponent"
+        },
+        {
+            "file": "SuperComponent.js",
+            "line": 96,
+            "description": "Renders the template in the element.\nCalled when the element is added to the DOM.\nCan be called when template needs to be updated, but should be used sparingly.",
+            "itemtype": "method",
+            "name": "render",
+            "access": "public",
+            "tagname": "",
+            "class": "SuperComponent"
+        },
+        {
+            "file": "SuperComponent.js",
+            "line": 110,
+            "description": "Goes through all relevant children and assigns references as well as events to them.\n\nChildren with `data-on` will get attached handlers to their events\nChildren with `data-ref` will be attached as a child of this element",
+            "itemtype": "method",
+            "name": "parseChildren",
+            "access": "public",
+            "tagname": "",
+            "class": "SuperComponent"
+        },
+        {
+            "file": "SuperComponent.js",
+            "line": 134,
+            "description": "Binds an array of method names to the element",
+            "example": [
+                "\n  ```js\n  this.bindAll([\n    '_onClick',\n    '_onHover',\n    '_onClickItem'\n  ])\n  ```"
+            ],
+            "itemtype": "method",
+            "name": "bindAll",
+            "params": [
+                {
+                    "name": "methods",
+                    "description": "An array of method names to be bound",
+                    "type": "Array"
+                }
+            ],
+            "access": "public",
+            "tagname": "",
+            "class": "SuperComponent"
+        },
+        {
+            "file": "SuperComponent.js",
+            "line": 157,
+            "description": "Triggers an event and callback-method if assigned",
+            "example": [
+                "\n  ```js\n  el.triggerEvent('coolcustomevent', {\n    someCustomData: 'here',\n    andMaybeSome: 'more'\n  })\n  ```"
+            ],
+            "itemtype": "method",
+            "name": "triggerEvent",
+            "params": [
+                {
+                    "name": "eventName",
+                    "description": "The name of the event to be called",
+                    "type": "String"
+                },
+                {
+                    "name": "detail",
+                    "description": "An object with information to be used by listeners",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "access": "public",
+            "tagname": "",
+            "class": "SuperComponent"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " SuperComponent.js:85"
+        }
+    ]
+}
