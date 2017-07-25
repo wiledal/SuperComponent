@@ -1,0 +1,27 @@
+{
+  "name": "super-component",
+  "version": "1.0.0",
+  "description": "This is a component designed to be used as the extended base of all your application's elements. It follows the class-based v1 CustomElement pattern, with some nifty additions, such as:",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wiledal/SuperComponent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wiledal/SuperComponent/issues"
+  },
+  "homepage": "https://github.com/wiledal/SuperComponent#readme",
+  "dependencies": {
+    "jsdoc": "^3.5.3",
+    "minami": "^1.2.3"
+  }
+}

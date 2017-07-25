@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SuperComponent - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="SuperComponent.html">SuperComponent</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SuperComponent.html#bindAll">bindAll</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SuperComponent.html#parseChildren">parseChildren</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SuperComponent.html#render">render</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="SuperComponent.html#triggerEvent">triggerEvent</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">SuperComponent</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        SuperComponent
+        </h2>
+        
+            <div class="class-description"><p>The base component of all living things.</p>
+<p>  Extend this to create fast components with built-in event handling
+  and auto child-reference assignment.</p>
+<p>  A <em>SuperComponent</em> follows the <code>CustomElement</code> lifecycle, with some additions:</p>
+<ul>
+<li><code>connected</code>: Called when the element is added to the DOM</li>
+<li><code>get template</code>: Called immediately after <code>connected</code> to render the element on screen</li>
+<li><code>rendered</code>: Called immediately after the rendering is done</li>
+<li><code>disconnected</code>: Called when and if the element is removed from the DOM</li>
+</ul>
+<p>  Special child attributes:</p>
+<ul>
+<li><p><code>data-on</code>: Assigns a callback on the nearest parent for the event supplied.
+Multiple events can be added by separating with a comma (,).</p>
+<pre class="prettyprint source lang-html"><code>&lt;custom-element>
+&lt;!-- Call this._onClick on the parent upon click, and this._onHover on mouseenter -->
+&lt;div data-on=&quot;click:_onClick, mouseenter: _onHover&quot;>Click or hover me&lt;/div>
+&lt;/custom-element></code></pre></li>
+<li><p><code>data-ref</code>: Assigns a variable reference to the element on the parent.
+The reference is available in the scope as <code>this.referenceName</code></p>
+<pre class="prettyprint source lang-html"><code>&lt;custom-element>
+&lt;!-- This child is available as this._childElement on the parent custom element -->
+&lt;div data-ref=&quot;_childElement&quot;>&lt;/div>
+&lt;/custom-element></code></pre></li>
+</ul>
+<p>  Usage example:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script>
+  class MyCoolElement extends SuperComponent {
+    get template () {
+      return `
+        &lt;h1 data-ref=&quot;_title&quot;>I will turn red if the button is clicked.&lt;/h1>
+        &lt;button data-on=&quot;click: _onClickButton, mouseenter: _onHoverButton&quot;>Click me&lt;/button>
+      `
+    }
+
+    _onHoverButton (event) {
+      this._title.style.background = 'blue'
+    }
+
+    _onClickButton (event) {
+      this._title.style.background = 'red'
+      alert('Child was clicked!')
+    }
+  }
+  customElements.define('my-cool-element', MyCoolElement)
+&lt;/script>
+
+&lt;my-cool-element>&lt;/my-cool-element></code></pre></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+<div class="section-method">
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="SuperComponent"><span class="type-signature"></span>new SuperComponent<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SuperComponent.js.html">SuperComponent.js</a>, <a href="SuperComponent.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>HTMLElement</li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<div class="section-members">
+<h4 class="name" id="template"><span class="type-signature"></span>template<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Returns the html of the element, should be defined as a <code>{Getter}</code></p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SuperComponent.js.html">SuperComponent.js</a>, <a href="SuperComponent.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+</div>
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="bindAll"><span class="type-signature"></span>bindAll<span class="signature">(methods)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Binds an array of method names to the element</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SuperComponent.js.html">SuperComponent.js</a>, <a href="SuperComponent.js.html#line142">line 142</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>methods</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <p>An array of method names to be bound</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>this.bindAll([
+  '_onClick',
+  '_onHover',
+  '_onClickItem'
+])
+    </code></pre>
+
+</div>
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="parseChildren"><span class="type-signature"></span>parseChildren<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Goes through all relevant children and assigns references as well as events to them.</p>
+<pre class="prettyprint source"><code>- Children with `data-on` will get attached handlers to their events
+- Children with `data-ref` will be attached to a variable on this element</code></pre>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SuperComponent.js.html">SuperComponent.js</a>, <a href="SuperComponent.js.html#line115">line 115</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="render"><span class="type-signature"></span>render<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Renders the template in the element.
+    Called when the element is added to the DOM.
+    Can be called when template needs to be updated, but should be used sparingly.</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SuperComponent.js.html">SuperComponent.js</a>, <a href="SuperComponent.js.html#line102">line 102</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+        
+            
+<div class="section-method">
+
+    
+
+    <h4 class="name" id="triggerEvent"><span class="type-signature"></span>triggerEvent<span class="signature">(eventName, detail<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Triggers an event and callback-method if assigned</p>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="SuperComponent.js.html">SuperComponent.js</a>, <a href="SuperComponent.js.html#line161">line 161</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>eventName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>String</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>The name of the event to be called</p>
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>detail</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Object</code></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">
+                <p>An object with information to be used by listeners</p>
+                
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section-examples">
+<h5>Example</h5>
+
+    <pre class="prettyprint"><code>el.triggerEvent('coolcustomevent', {
+  someCustomData: 'here',
+  andMaybeSome: 'more'
+})
+    </code></pre>
+
+</div>
+
+</div>
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Tue Jul 25 2017 08:44:14 GMT+0200 (CEST) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
