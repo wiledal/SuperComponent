@@ -84,7 +84,7 @@ class SuperComponent extends HTMLElement {
 
   /**
     Returns the html of the element, should be defined as a `{Getter}`
-    
+
     @returns {String}
     @public
   */
@@ -166,3 +166,6 @@ el.triggerEvent('coolcustomevent', {
     if (this[`on${eventName}`]) this[`on${eventName}`](ce)
   }
 }
+
+if (typeof module != 'undefined') module.exports = SuperComponent
+if (typeof exports != 'undefined') exports['default'] = SuperComponent
