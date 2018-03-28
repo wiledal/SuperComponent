@@ -1,4 +1,5 @@
 # SuperComponent?
+### v2.0.0
 
 This is a component designed to be used as the extended base of all your
 application's elements.
@@ -21,4 +22,4 @@ It works really well in a [vanilla bean type codebase](https://github.com/wileda
 
 Compile it with [Babel](https://babeljs.io/) and use with a [CustomElements polyfill](https://github.com/WebReflection/document-register-element) for cross/old-browser support.
 
-Add cool animations with [AnimationService](https://github.com/wiledal/animation-service)
+Add cool animations with [AnimationService](https://github.com/wiledal/animation-service).

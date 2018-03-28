@@ -63,11 +63,9 @@
     <script src="../source/SuperComponent.js" charset="utf-8"></script>
     <script type="text/javascript">
       class SuperDropdown extends SuperComponent {
-        connected () {
-          this.bindAll([
-            '_onClickElement'
-          ])
-        }
+        get autoBind () { return [
+          '_onClickElement'
+        ]}
 
         get template () {
           return `
@@ -78,7 +76,7 @@
           `
         }
 
-        rendered () {
+        didRender () {
           var els = [].slice.call(this._itemContainer.querySelectorAll('li'))
           els.forEach((el) => el.onclick = this._onClickElement)
 

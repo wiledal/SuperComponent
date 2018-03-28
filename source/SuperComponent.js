@@ -5,11 +5,11 @@
   and auto child-reference assignment.
 
   A _SuperComponent_ follows the `CustomElement` lifecycle, with some additions:
-  - `connected`: Called when the element is added to the DOM
-  - `get template`: Called immediately after `connected` to render the element on screen
-  - `rendered`: Called immediately after the rendering is done
-  - `disconnected`: Called when and if the element is removed from the DOM
-
+  - `connected()`: Called when the element is added to the DOM
+  - `willRender()`: Everytime before the element renders
+  - `get template()`: Gets the template of the element
+  - `didRender()`: Called immediately after the rendering is done
+  - `disconnected()`: Called when and if the element is removed from the DOM
 
   Special child attributes:
   - `data-on`: Assigns a callback on the nearest parent for the event supplied.
@@ -30,47 +30,60 @@
 </custom-element>
   ```
 
-
   Usage example:
-  ```html
-<script>
-  class MyCoolElement extends SuperComponent {
-    get template () {
-      return `
+```html
+  <script>
+    class MyCoolElement extends SuperComponent {
+      get template () { return `
         <h1 data-ref="_title">I will turn red if the button is clicked.</h1>
         <button data-on="click: _onClickButton, mouseenter: _onHoverButton">Click me</button>
-      `
-    }
+      `}
 
-    _onHoverButton (event) {
-      this._title.style.background = 'blue'
-    }
+      get autoBind () { return [
+        'someMethod'
+      ]}
 
-    _onClickButton (event) {
-      this._title.style.background = 'red'
-      alert('Child was clicked!')
-    }
-  }
-  customElements.define('my-cool-element', MyCoolElement)
-</script>
+      _someMethod () {
+        // Do stuff
+      }
 
-<my-cool-element></my-cool-element>
-  ```
+      _onHoverButton (event) {
+        this._title.style.background = 'blue'
+      }
+
+      _onClickButton (event) {
+        this._title.style.background = 'red'
+        alert('Child was clicked!')
+      }
+    }
+    customElements.define('my-cool-element', MyCoolElement)
+  </script>
+
+  <my-cool-element></my-cool-element>
+```
 
   @extends HTMLElement
 */
 class SuperComponent extends HTMLElement {
   /**
     Called natively when the element is added to the DOM
-    Calls `this.connected()` if defined.
+    Calls `this.connected()`
     Calls `this.render()`
 
     @private
   */
   connectedCallback () {
-    if (this.connected) this.connected()
+    this.connected()
+    if (this.autoBind) this.bindAll(this.autoBind)
     this.render()
   }
+
+  /**
+   * Called when the element is added to the DOM
+   *
+   * @public
+   */
+  connected () {}
 
   /**
     Called natively when the element is removed from the DOM
@@ -83,6 +96,13 @@ class SuperComponent extends HTMLElement {
   }
 
   /**
+   * Called when the element is removed from the DOM
+   *
+   * @public
+   */
+  disconnected () {}
+
+  /**
     Returns the html of the element, should be defined as a `{Getter}`
 
     @returns {String}
@@ -93,6 +113,26 @@ class SuperComponent extends HTMLElement {
   }
 
   /**
+   * Auto-binds and array of method names to this object.
+   * An automatic way of calling `this.bindAll(['methodOne', 'methodTwo'])`.
+   *
+   * @return {Array} The array of method names
+   * @example
+   *  get autoBind () { [
+   *    '_methodOne',
+   *    '_metbodTwo'
+   *  ] }
+   */
+  get autoBind () { return null }
+
+  /**
+   * Called first on `render()`, before the innerHTML is updated.
+   *
+   * @public
+   */
+  willRender () {}
+
+  /**
     Renders the template in the element.
     Called when the element is added to the DOM.
     Can be called when template needs to be updated, but should be used sparingly.
@@ -100,10 +140,18 @@ class SuperComponent extends HTMLElement {
     @public
   */
   render () {
+    this.willRender()
     if (this.template) this.innerHTML = this.template
     this.parseChildren()
-    if (this.rendered) this.rendered()
+    this.didRender()
   }
+
+  /**
+   * Called last on `render()`, after the innerHTML is updated and children are parsed.
+   *
+   * @public
+   */
+  didRender () {}
 
   /**
     Goes through all relevant children and assigns references as well as events to them.
@@ -166,6 +214,8 @@ el.triggerEvent('coolcustomevent', {
     if (this[`on${eventName}`]) this[`on${eventName}`](ce)
   }
 }
+
+SuperComponent.version = '2.0.0'
 
 if (typeof module != 'undefined') module.exports = SuperComponent
 if (typeof exports != 'undefined') exports['default'] = SuperComponent
