@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SuperComponent State Example</title>
+
+    <script src="../source/SuperComponent.js" charset="utf-8"></script>
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      // Basic watchable state implementation
+      const AppState = (() => {
+        const controller = {}
+
+        const state = {}
+        var listeners = {}
+
+        controller.set = (key, val) => {
+          state[key] = val
+
+          controller.refresh(key)
+        }
+
+        controller.get = (key) => {
+          return state[key]
+        }
+
+        controller.refresh = (key) => {
+          if (listeners[key]) {
+            listeners[key].forEach(l => l.render())
+          }
+        }
+
+        controller.watch = (key, element) => {
+          if (!listeners[key]) listeners[key] = []
+
+          listeners[key].push(element)
+        }
+
+        controller.unwatch = (key, element) => {
+          if (listeners[key] && listeners[key].indexOf(element) > -1) {
+            listeners[key].splice(listeners[key].indexOf(element), 1)
+          }
+        }
+
+        return controller
+      })()
+
+      // Small alteration to render
+      class StateComponent extends SuperComponent {
+        connectedCallback () {
+          if (this.dataset.state) {
+            AppState.watch(this.dataset.state, this)
+          }
+
+          super.connectedCallback()
+        }
+
+        render () {
+          this._state = AppState.get(this.dataset.state)
+          super.render()
+        }
+
+        disconnectedCallback () {
+          AppState.unwatch(this.dataset.state, this)
+        }
+      }
+
+      AppState.set('core', {
+        name: 'Banana',
+        something: 'Potato'
+      })
+
+      AppState.set('core__list', [
+        'one',
+        'two',
+        'three',
+        'four'
+      ])
+
+      customElements.define('test-component', class extends StateComponent {
+        get template () { return `
+          Hi this is coming from state: ${this._state.name}
+        `}
+      })
+
+      customElements.define('test-form', class extends StateComponent {
+        get template () { return `
+          <form data-on="submit:_onSubmit">
+            <p>Name: <input value="${this._state.name}" data-ref="_inputName" type="text" /></p>
+            <p><button>Send</button></p>
+          </form>
+        `}
+
+        _onSubmit (event) {
+          event.preventDefault()
+
+          this._state.name = this._inputName.value
+          AppState.refresh(this.dataset.state)
+        }
+      })
+
+      customElements.define('test-list', class extends StateComponent {
+        get template () { return `
+          <h2>I'm a list. I list things.</h2>
+          <ul>
+          ${this._state.map(item => `
+            <li>${item}</li>
+          `).join('')}
+          </ul>
+        `}
+      })
+    </script>
+
+    <test-component data-state='core'></test-component>
+    <test-form data-state="core"></test-form>
+    <test-list data-state="core__list"></test-list>
+  </body>
+</html>
