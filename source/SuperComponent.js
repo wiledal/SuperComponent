@@ -73,8 +73,8 @@ class SuperComponent extends HTMLElement {
     @private
   */
   connectedCallback () {
-    this.connected()
     if (this.autoBind) this.bindAll(this.autoBind)
+    this.connected()
     this.render()
   }
 
@@ -215,7 +215,7 @@ el.triggerEvent('coolcustomevent', {
   }
 }
 
-SuperComponent.version = '2.0.0'
+SuperComponent.version = '2.0.1'
 
 if (typeof module != 'undefined') module.exports = SuperComponent
 if (typeof exports != 'undefined') exports['default'] = SuperComponent
