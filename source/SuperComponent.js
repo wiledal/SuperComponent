@@ -206,16 +206,14 @@ el.triggerEvent('coolcustomevent', {
     @param {Object} [detail] An object with information to be used by listeners
     @public
   */
-  triggerEvent (eventName, detail) {
-    var ce = new CustomEvent(eventName, {
-      detail
-    })
+  triggerEvent (eventName, eventData) {
+    var ce = new CustomEvent(eventName, eventData)
     this.dispatchEvent(ce)
     if (this[`on${eventName}`]) this[`on${eventName}`](ce)
   }
 }
 
-SuperComponent.version = '2.0.1'
+SuperComponent.version = '2.0.2'
 
 if (typeof module != 'undefined') module.exports = SuperComponent
 if (typeof exports != 'undefined') exports['default'] = SuperComponent
